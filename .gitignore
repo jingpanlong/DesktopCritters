@@ -1,0 +1,20 @@
+# Build output
+dist/
+obj/
+bin/
+
+# Test scratch
+test-output/
+test-output-*/
+payload-test*/
+selftest*/
+smoketest*/
+
+# IDE
+.vs/
+*.user
+*.suo
+
+# OS
+Thumbs.db
+Desktop.ini

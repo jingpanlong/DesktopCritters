@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <OutputType>WinExe</OutputType><RootNamespace>DesktopCritters</RootNamespace><AssemblyName>DesktopCritters</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion><OutputPath>dist\</OutputPath><Optimize>true</Optimize>
+    <ApplicationManifest>app.manifest</ApplicationManifest><ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System"/><Reference Include="System.Core"/><Reference Include="System.Drawing"/><Reference Include="System.Windows.Forms"/><Reference Include="System.Xml"/>
+    <Reference Include="UIAutomationClient"/><Reference Include="UIAutomationTypes"/><Reference Include="WindowsBase"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs"/><Compile Include="Native.cs"/><Compile Include="Settings.cs"/><Compile Include="Surfaces.cs"/>
+    <Compile Include="CreatureCatalog.cs"/><Compile Include="CreatureRenderer.cs"/><Compile Include="PhotoSpriteRenderer.cs"/><Compile Include="DesktopIcons.cs"/><Compile Include="PetForm.cs"/><Compile Include="PetForm.Chores.cs"/><Compile Include="About.cs"/><Compile Include="Habitat.cs"/><Compile Include="ControlPanel.cs"/><Compile Include="Ui.cs"/><Compile Include="AppIcon.cs"/>
+    <None Include="app.manifest"/><None Include="app.ico"/><None Include="Installer.cs"/><None Include="build.ps1"/>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="app.ico"><LogicalName>Critters.app.ico</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\icon-master.png"><LogicalName>Critters.icon.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\logo.png"><LogicalName>Critters.logo.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\logo-mark.png"><LogicalName>Critters.mark.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Beetle-HD.png"><LogicalName>Critters.Assets.Beetle-HD.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Ladybug-HD.png"><LogicalName>Critters.Assets.Ladybug-HD.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Ant-HD.png"><LogicalName>Critters.Assets.Ant-HD.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Bee-HD.png"><LogicalName>Critters.Assets.Bee-HD.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Butterfly-HD.png"><LogicalName>Critters.Assets.Butterfly-HD.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Spider-HD.png"><LogicalName>Critters.Assets.Spider-HD.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Mantis-HD.png"><LogicalName>Critters.Assets.Mantis-HD.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Snail-HD.png"><LogicalName>Critters.Assets.Snail-HD.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Assets\Caterpillar-HD.png"><LogicalName>Critters.Assets.Caterpillar-HD.png</LogicalName></EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+</Project>
