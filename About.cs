@@ -8,6 +8,9 @@ namespace DesktopCritters {
 internal sealed class AboutWindow:Form {
     // Public repository: source code, builds and releases live here.
     internal const string GitHubUrl="https://github.com/USERNAME/DesktopCritters";
+    // The URL ships as a placeholder until the public repository exists; the
+    // About row then reads "coming soon" instead of showing a dead link.
+    internal static bool GitHubReady{get{return !GitHubUrl.Contains("USERNAME");}}
     private PictureBox art;
     internal AboutWindow(){
         Text="关于微野";Icon=AppIcon.Load(32);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;MinimizeBox=false;ShowInTaskbar=false;
@@ -37,9 +40,11 @@ internal sealed class AboutWindow:Form {
         contact.Controls.Add(new Label{Text="景同学",Font=Ui.F(10.5f,FontStyle.Bold),ForeColor=Ui.Ink,BackColor=Ui.Card,Bounds=new Rectangle(112,72,180,26)});
         contact.Controls.Add(FeedbackButton("复制",348,72,delegate{Clipboard.SetText("景同学");},"已复制"));
         contact.Controls.Add(new Label{Text="GitHub",Font=Ui.F(9f,FontStyle.Regular),ForeColor=Ui.Muted,BackColor=Ui.Card,Bounds=new Rectangle(16,108,92,24)});
-        contact.Controls.Add(new Label{Text=GitHubShort(),Font=Ui.F(9.5f,FontStyle.Bold),ForeColor=Ui.Ink,BackColor=Ui.Card,Bounds=new Rectangle(112,106,150,26)});
-        contact.Controls.Add(FeedbackButton("打开",276,106,delegate{try{Process.Start(GitHubUrl);}catch{try{Clipboard.SetText(GitHubUrl);}catch{}}},"已打开"));
-        contact.Controls.Add(FeedbackButton("复制",348,106,delegate{Clipboard.SetText(GitHubUrl);},"已复制"));
+        contact.Controls.Add(new Label{Text=GitHubReady?GitHubShort():"即将开放",Font=Ui.F(9.5f,FontStyle.Bold),ForeColor=Ui.Ink,BackColor=Ui.Card,Bounds=new Rectangle(112,106,150,26)});
+        if(GitHubReady){
+            contact.Controls.Add(FeedbackButton("打开",276,106,delegate{try{Process.Start(GitHubUrl);}catch{try{Clipboard.SetText(GitHubUrl);}catch{}}},"已打开"));
+            contact.Controls.Add(FeedbackButton("复制",348,106,delegate{Clipboard.SetText(GitHubUrl);},"已复制"));
+        }
         Controls.Add(contact);
 
         var close=new PillButton("知道了",PillKind.Primary,delegate{Close();}){Bounds=new Rectangle(170,540,140,36)};
