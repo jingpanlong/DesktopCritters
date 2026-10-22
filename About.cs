@@ -7,7 +7,7 @@ namespace DesktopCritters {
 // Themed "about" dialog: product intro plus how to reach the author.
 internal sealed class AboutWindow:Form {
     // Public repository: source code, builds and releases live here.
-    internal const string GitHubUrl="https://github.com/USERNAME/DesktopCritters";
+    internal const string GitHubUrl="https://github.com/jingpanlong/DesktopCritters";
     // The URL ships as a placeholder until the public repository exists; the
     // About row then reads "coming soon" instead of showing a dead link.
     internal static bool GitHubReady{get{return !GitHubUrl.Contains("USERNAME");}}

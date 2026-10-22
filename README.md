@@ -3,10 +3,10 @@
 **Nine little lives that move around your Windows desktop.** — 九种会爬、会飞、会搬家的小动物，住在你的 Windows 桌面上。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)](https://github.com/USERNAME/DesktopCritters)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)](https://github.com/jingpanlong/DesktopCritters)
 [![.NET](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4)](https://dotnet.microsoft.com/download/dotnet-framework/net48)
-[![Release](https://img.shields.io/badge/release-v3.1-brightgreen)](https://github.com/USERNAME/DesktopCritters/releases)
-[![Release downloads](https://img.shields.io/github/downloads/USERNAME/DesktopCritters/total)](https://github.com/USERNAME/DesktopCritters/releases)
+[![Release](https://img.shields.io/badge/release-v3.1-brightgreen)](https://github.com/jingpanlong/DesktopCritters/releases)
+[![Release downloads](https://img.shields.io/github/downloads/jingpanlong/DesktopCritters/total)](https://github.com/jingpanlong/DesktopCritters/releases)
 
 ![All nine species](screenshots/preview.png)
 
@@ -33,7 +33,7 @@ Every animal is driven by a single high-resolution (1254×1254) sprite that is d
 
 ## Download
 
-Grab the latest build from the [Releases page](https://github.com/USERNAME/DesktopCritters/releases):
+Grab the latest build from the [Releases page](https://github.com/jingpanlong/DesktopCritters/releases):
 
 | File | What it is |
 |---|---|
@@ -101,7 +101,7 @@ Open `DesktopCritters.csproj` in Visual Studio if you prefer an IDE build.
 
 ## 下载
 
-到 [Releases 页面](https://github.com/USERNAME/DesktopCritters/releases) 下载：
+到 [Releases 页面](https://github.com/jingpanlong/DesktopCritters/releases) 下载：
 
 - `DesktopCritters-<version>-portable.exe` —— 单文件便携版，直接运行
 - `DesktopCritters-<version>-setup.exe` —— 当前用户安装版
