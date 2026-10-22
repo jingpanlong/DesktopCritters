@@ -27,16 +27,22 @@ internal sealed partial class PetForm {
         if(night&&Rng.Next(100)<34){SetState("睡觉",Rng.Next(8,20));return;}
         bool curious=Profile.Temperament=="好奇";
         int r=Rng.Next(100);
-        // Keep chores within each animal's real body plan.
-        if(CreatureCatalog.CarriesIcons(Species)&&World.Config.CarryIcons&&World.IconCarryFree(this)&&r<(curious?26:20)){if(TryStartCarry())return;}
-        else if(CreatureCatalog.CanFly(Species)&&World.Config.Flight&&r<22){if(TryFlight())return;}
-        else if(CreatureCatalog.PushesFood(Species)&&World.Config.CarryIcons&&r<18){if(TryPushFood())return;}
-        else if(Species=="Bee"&&r<22){SetState("采蜜",Rng.Next(3,7));return;}
-        else if(Species=="Butterfly"&&r<20){SetState("停翅晒暖",Rng.Next(5,10));return;}
-        else if(Species=="Spider"&&r<20){SetState(Rng.Next(2)==0?"结网":"伏击",Rng.Next(4,9));return;}
-        else if(Species=="Mantis"&&r<18){SetState(Rng.Next(2)==0?"潜伏":"凝视",Rng.Next(3,7));return;}
-        else if(Species=="Snail"&&r<28){SetState("晒太阳",Rng.Next(6,12));return;}
-        else if(Species=="Caterpillar"&&r<22){SetState("啃叶",Rng.Next(3,7));return;}
+        // Feature parity: every species rolls for every chore, with a heavier
+        // weight on its signature one so each animal's character still shows.
+        // Rolling each independently (instead of one else-if ladder) also keeps
+        // the push chore reachable when carry and flight are both enabled.
+        int carryW=CreatureCatalog.CarriesIcons(Species)?(curious?26:20):(curious?16:10);
+        int flyW=CreatureCatalog.CanFly(Species)?24:13;
+        int pushW=CreatureCatalog.PushesFood(Species)?20:9;
+        if(World.Config.CarryIcons&&World.IconCarryFree(this)&&Rng.Next(100)<carryW){if(TryStartCarry())return;}
+        if(World.Config.Flight&&Rng.Next(100)<flyW){if(TryFlight())return;}
+        if(World.Config.CarryIcons&&Rng.Next(100)<pushW){if(TryPushFood())return;}
+        if(Species=="Bee"&&r<22){SetState("采蜜",Rng.Next(3,7));return;}
+        if(Species=="Butterfly"&&r<20){SetState("停翅晒暖",Rng.Next(5,10));return;}
+        if(Species=="Spider"&&r<20){SetState(Rng.Next(2)==0?"结网":"伏击",Rng.Next(4,9));return;}
+        if(Species=="Mantis"&&r<18){SetState(Rng.Next(2)==0?"潜伏":"凝视",Rng.Next(3,7));return;}
+        if(Species=="Snail"&&r<28){SetState("晒太阳",Rng.Next(6,12));return;}
+        if(Species=="Caterpillar"&&r<22){SetState("啃叶",Rng.Next(3,7));return;}
         int pick=Rng.Next(100);
         if(curious)pick=Math.Min(96,(int)(pick*0.82));
         if(World.Config.FollowMouse&&pick<28){SetState("探索",Rng.Next(3,7));return;}
@@ -136,7 +142,10 @@ internal sealed partial class PetForm {
 
     // ---------- chore: ladybug flight ----------
     internal bool TryFlight(){
-        if(!World.Config.Flight||!CreatureCatalog.CanFly(Species)||IsTravel||Surface!=null||dragging)return false;
+        // Every species can take to the air: flyers beat their wings, the rest
+        // leap, balloon or bounce (see TickFlight and ComposeFrame). CanFly now
+        // only picks the flight rendering, never gates the behaviour.
+        if(!World.Config.Flight||IsTravel||Surface!=null||dragging)return false;
         if(!World.FlightsFree(this))return false;
         for(int i=0;i<14;i++){
             double a=Rng.NextDouble()*Math.PI*2,d=190+Rng.NextDouble()*230;

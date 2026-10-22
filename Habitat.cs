@@ -200,7 +200,7 @@ internal sealed class Habitat:ApplicationContext {
         m.Items.Add(p.Profile.Name+" · "+p.State).Enabled=false;
         m.Items.Add("喂它",null,delegate{defer(delegate{Feed(Point.Round(p.Position));});});
         m.Items.Add("搬个桌面图标",null,delegate{defer(delegate{if(!p.TryStartCarry()){Log("现在没有可以搬的东西："+IconError);Hint("现在搬不了",IconError);}});});
-        if(CreatureCatalog.CanFly(p.Species))m.Items.Add("飞一小段",null,delegate{defer(delegate{if(!p.TryFlight()){string why="这里太贴边，或已有同伴在飞";Log("它现在不想飞："+why);Hint("它现在不想飞",why);}});});
+        m.Items.Add("飞一小段",null,delegate{defer(delegate{if(!p.TryFlight()){string why="这里太贴边，或已有同伴在飞";Log("它现在不想飞："+why);Hint("它现在不想飞",why);}});});
         m.Items.Add("推一推食物",null,delegate{defer(delegate{if(!p.TryPushFood()){Log("附近没有可推的食物");Hint("先投喂一点食物","右键桌面空白处 → 在鼠标处投喂，它就会去推。");}});});
         m.Items.Add("沿任务栏爬行",null,delegate{defer(delegate{p.PickRoute("任务栏");});});
         m.Items.Add("沿菜单栏爬行",null,delegate{defer(delegate{p.PickRoute("菜单栏");});});

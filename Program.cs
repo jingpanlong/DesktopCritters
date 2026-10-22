@@ -65,7 +65,7 @@ internal static class IconTest {
     }
 }
 internal static class SmokeTest {
-    internal static System.Windows.Forms.Timer Start(Habitat w,string dir){Directory.CreateDirectory(dir);int n=0;bool mixed=false,fight=false,peace=false,left=false,returned=false,menu=false,travel=false,input=false,hidden=false;PointF routeStart=PointF.Empty;PetForm traveler=w.Pets[2];int beforeReturns=traveler.Returns;
+    internal static System.Windows.Forms.Timer Start(Habitat w,string dir){Directory.CreateDirectory(dir);int n=0;bool mixed=false,fight=false,peace=false,left=false,returned=false,menu=false,travel=false,input=false,hidden=false;PointF routeStart=PointF.Empty;Point crumb=Point.Empty;PetForm traveler=w.Pets[2];int beforeReturns=traveler.Returns;
         bool carryStart=false,carrySeen=false,carryDone=false,flightStart=false,flightSeen=false,pushStart=false,pushSeen=false,pushDone=false,sizeWorks=false;string diag="";
         w.Config.MouseFear=false;w.Config.AllowOffscreen=false;w.Config.NightSleep=false;var timer=new System.Windows.Forms.Timer{Interval=1000};
         timer.Tick+=delegate{timer.Stop();try{n++;
@@ -75,11 +75,20 @@ internal static class SmokeTest {
             if(n==8){w.Recall();w.Config.AllowOffscreen=false;w.Config.Speed=140;w.Map.Refresh(w.Config);var surface=w.Map.Items.FirstOrDefault(s=>s.Kind=="菜单栏");menu=surface!=null;if(surface==null)surface=w.Map.Items.FirstOrDefault(s=>s.Kind=="任务栏");if(surface==null)surface=w.Map.Items.FirstOrDefault(s=>s.Kind=="屏幕边缘");if(surface==null)surface=w.Map.Items.FirstOrDefault(s=>s.Kind=="窗口边缘");if(surface!=null){w.Pets[0].Direction=1;w.Pets[0].AttachRoute(surface,40);w.Pets[0].Heading=w.Pets[0].TargetHeading=0;routeStart=w.Pets[0].Position;}}
             if(n==9){
                 // feature parity: a bee (not the ant) hauls a desktop icon, a
-                // snail (not a flyer) takes off
-                PetForm bee=w.Pets.FirstOrDefault(p=>p.Species=="Bee");DesktopIcons.Refresh(true);var icons=DesktopIcons.Snapshot();
-                if(bee!=null&&icons.Count>2){bee.ResetRoute();bee.Position=new PointF(icons[1].Center.X-70,icons[1].Center.Y+8);bee.Heading=bee.TargetHeading=0;carryStart=bee.TryStartCarry();}
-                PetForm snail=w.Pets.FirstOrDefault(p=>p.Species=="Snail");Rectangle b=Screen.PrimaryScreen.WorkingArea;
-                if(snail!=null){snail.ResetRoute();snail.Position=new PointF(b.Left+b.Width/2,b.Top+b.Height/2);flightStart=snail.TryFlight();}
+                // snail (not a flyer) takes off. Both triggers retry every
+                // tick until the permit frees up, and a pet already doing the
+                // chore on its own counts as started.
+                if(!carryStart){
+                    PetForm bee=w.Pets.FirstOrDefault(p=>p.Species=="Bee");
+                    if(bee!=null&&(bee.State=="找图标"||bee.State=="搬运"||bee.State=="放下"))carryStart=true;
+                    else if(bee!=null){DesktopIcons.Refresh(true);var icons=DesktopIcons.Snapshot();
+                        if(icons.Count>2){bee.ResetRoute();bee.Position=new PointF(icons[1].Center.X-70,icons[1].Center.Y+8);bee.Heading=bee.TargetHeading=0;carryStart=bee.TryStartCarry();}}
+                }
+                if(!flightStart){
+                    PetForm snail=w.Pets.FirstOrDefault(p=>p.Species=="Snail");Rectangle b=Screen.PrimaryScreen.WorkingArea;
+                    if(snail!=null&&(snail.State=="起飞"||snail.State=="飞行"||snail.State=="降落"))flightStart=true;
+                    else if(snail!=null){snail.ResetRoute();snail.Position=new PointF(b.Left+b.Width/2,b.Top+b.Height/2);flightStart=snail.TryFlight();}
+                }
             }
             if(n>9){foreach(var p in w.Pets){if(p.IsDisposed)continue;if(p.State=="搬运")carrySeen=true;if(p.State=="推食物")pushSeen=true;}}
             if(n==10){
@@ -92,9 +101,17 @@ internal static class SmokeTest {
                     double score=Double.MaxValue;foreach(var p in w.Pets)score=Math.Min(score,PetForm.Dist(p.Position,c));
                     if(score>bestScore){bestScore=score;best=c;}
                 }
-                w.Feed(best);
+                crumb=best;w.Feed(crumb);
+            }
+            // the spider retries the push every tick until it starts; a fresh
+            // crumb is dropped whenever the old one gets eaten first
+            if(n>=10&&!pushStart&&crumb!=Point.Empty){
                 PetForm spider=w.Pets.FirstOrDefault(p=>p.Species=="Spider");
-                if(spider!=null&&w.Foods.Count>0){spider.ResetRoute();spider.Position=new PointF(best.X-30,best.Y+20);pushStart=spider.TryPushFood();}
+                if(spider!=null&&spider.State=="推食物")pushStart=true;
+                else{
+                    if(w.Foods.Count==0)w.Feed(crumb);
+                    if(spider!=null&&w.Foods.Count>0){spider.ResetRoute();spider.Position=new PointF(crumb.X-30,crumb.Y+20);pushStart=spider.TryPushFood();}
+                }
             }
             if(n==11){PetForm morph=w.Pets.FirstOrDefault(p=>(p.Species=="Butterfly"||p.Species=="Spider"||p.Species=="Caterpillar"||p.Species=="Mantis")&&!p.Offscreen)??w.Pets.FirstOrDefault(p=>!p.Offscreen)??w.Pets[0];Size was=morph.Size;morph.Profile.Size=180;morph.DrawFrame();bool grew=morph.Size.Width>was.Width;morph.Profile.Size=50;morph.DrawFrame();bool shrank=morph.Size.Width<was.Width;morph.Profile.Size=100;morph.DrawFrame();sizeWorks=grew&&shrank&&Math.Abs(morph.Size.Width-was.Width)<6;}
             if(n==11){PetForm sp=w.Pets.FirstOrDefault(p=>p.Species=="Spider");diag="p0="+w.Pets[0].State+"/surf"+(w.Pets[0].Surface!=null)+"/d"+ (int)PetForm.Dist(routeStart,w.Pets[0].Position)+" spider="+(sp==null?"none":sp.State)+"/off"+(sp!=null&&sp.Offscreen)+" foods="+w.Foods.Count+"/"+String.Join(",",w.Foods.Select(f=>f.Portions.ToString()).ToArray());}
